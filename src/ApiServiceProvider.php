@@ -8,7 +8,7 @@ class ApiServiceProvider extends ServiceProvider
 {
     public function boot()
     {
-        $this->middleware('api', 'Jnet\Api\Http\ApiMiddleware');
+        $this->app->middleware('api', 'Jnet\Api\Http\ApiMiddleware');
     }
 
     public function register()
