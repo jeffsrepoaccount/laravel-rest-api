@@ -1,7 +1,7 @@
 <?php namespace Jnet\Api\Repository;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Jnet\Api\Validators\ValidatorAbstract;
+use Jnet\Api\Validators\ValidatorAbstract;
 
 abstract class RepositoryAbstract
 {
