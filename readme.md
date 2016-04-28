@@ -10,11 +10,12 @@ _TODO_ __Extensibility__ - By default, only JSON data is supported.  However, sh
 
 ## Usage
 
-To be able to return resources, you need some resources to return.  In a migration create your table structure.  An additional auto-increment field is necessary for use when constructing cursors.
+1. To be able to return resources, you need some resources to return.  In a migration create your table structure.  An additional auto-increment field is necessary for use when constructing cursors.
 
 ```php
 Schema::create('resource', function($tale) {
     $table->string('id', 36)->primary(); // GUIDs prevent maths
+    $table->string('name', '255');
     // ... other fields ...
 });
 
@@ -22,7 +23,7 @@ Schema::create('resource', function($tale) {
 // fields primary keys, which we don't really want to do.
 DB::statement('ALTER TABLE messages ADD cursor BIGINT NOT NULL UNIQUE AUTO_INCREMENT');
 ```
-With a resource, now you need a model:
+2. With a resource, now you need a model:
 
 ```php
 <?php namespace My\Models;
@@ -40,14 +41,15 @@ class Amodel extends Model
     protected $dates = ['deleted_at'];
 
     protected $fillable = [
-        // all your fields
+        // your fillable fields
+        'name',
     ];
 
     // any relationships
 }
 ```
 
-Create a corresponding validator:
+3. Create a corresponding validator for the resource:
 
 ```php
 <?php namespace My\Validators;
@@ -64,7 +66,7 @@ class ResourceValidator extends ValidatorAbstract
 }
 ```
 
-Now that you have a model and a validator, create a repository:
+4. Now that you have a model and a validator, create a repository:
 
 ```php
 <?php namespace My\Repository;
@@ -83,7 +85,7 @@ class ResourceRepository extends RepositoryAbstract
 
 ```
 
-With these pieces in place, create the resource's transformer:
+5. With these pieces in place, create the resource's transformer:
 
 ```php
 <?php namespace My\Transformers;
@@ -111,15 +113,15 @@ class RoomTransformer extends TransformerAbstract
 }
 ```
 
-Lastly, create a controller and add route endpoints to your resource:
+6. Lastly, create a controller and add route endpoints to your resource:
 
 ```php
 <?php namespace My\Controllers;
 
-use My\Repository\ResourceRepository;
 use Jnet\Api\Controllers\ApiController;
 use Jnet\Api\Filters\FilterInterface;
 use Jnet\Api\Transformers\ErrorTransformer;
+use My\Repository\ResourceRepository;
 use My\Transformers\ResourceTransformer;
 
 class ResourceController extends ApiController
