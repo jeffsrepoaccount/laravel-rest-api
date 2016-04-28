@@ -66,7 +66,15 @@ class ResourceValidator extends ValidatorAbstract
 }
 ```
 
-Now that you have a model and a validator, create a repository:
+Register the validator inside of a service provider:
+
+```php
+$app->bind('My\Validators\ResourceValidator', function() {
+    return new ResourceValidator(Input::all());
+});
+```
+
+Now that you have a model and a validator properly registered, create a repository:
 
 ```php
 <?php namespace My\Repository;

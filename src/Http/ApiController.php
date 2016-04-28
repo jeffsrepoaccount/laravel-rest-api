@@ -1,4 +1,4 @@
-<?php namespace Jnet\Api\Controllers;
+<?php namespace Jnet\Api\Http;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Database\Eloquent\Model;

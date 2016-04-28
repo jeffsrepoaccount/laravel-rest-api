@@ -6,7 +6,10 @@ use App\Jnet\Api\Filters\Sieve;
 
 class ApiServiceProvider extends ServiceProvider
 {
-    public function boot(){}
+    public function boot()
+    {
+        $this->middleware('api', 'Jnet\Api\Http\ApiMiddleware');
+    }
 
     public function register()
     {
