@@ -10,7 +10,7 @@ _TODO_ __Extensibility__ - By default, only JSON data is supported.  However, sh
 
 ## Usage
 
-1. To be able to return resources, you need some resources to return.  In a migration create your table structure.  An additional auto-increment field is necessary for use when constructing cursors.
+To be able to return resources, you need some resources to return.  In a migration create your table structure.  An additional auto-increment field is necessary for use when constructing cursors.
 
 ```php
 Schema::create('resource', function($tale) {
@@ -23,7 +23,7 @@ Schema::create('resource', function($tale) {
 // fields primary keys, which we don't really want to do.
 DB::statement('ALTER TABLE messages ADD cursor BIGINT NOT NULL UNIQUE AUTO_INCREMENT');
 ```
-2. With a resource, now you need a model:
+With a resource, now you need a model:
 
 ```php
 <?php namespace My\Models;
@@ -49,7 +49,7 @@ class Amodel extends Model
 }
 ```
 
-3. Create a corresponding validator for the resource:
+Create a corresponding validator for the resource:
 
 ```php
 <?php namespace My\Validators;
@@ -66,7 +66,7 @@ class ResourceValidator extends ValidatorAbstract
 }
 ```
 
-4. Now that you have a model and a validator, create a repository:
+Now that you have a model and a validator, create a repository:
 
 ```php
 <?php namespace My\Repository;
@@ -85,7 +85,7 @@ class ResourceRepository extends RepositoryAbstract
 
 ```
 
-5. With these pieces in place, create the resource's transformer:
+With these pieces in place, create the resource's transformer:
 
 ```php
 <?php namespace My\Transformers;
@@ -113,7 +113,7 @@ class RoomTransformer extends TransformerAbstract
 }
 ```
 
-6. Lastly, create a controller and add route endpoints to your resource:
+Lastly, create a controller and add route endpoints to your resource:
 
 ```php
 <?php namespace My\Controllers;
