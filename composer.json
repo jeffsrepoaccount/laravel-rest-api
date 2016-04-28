@@ -1,0 +1,21 @@
+{
+    "name": "jefflikeschicken/api",
+    "description": "General purpose API resource server",
+    "type": "library",
+    "require": {
+        "laravel/framework": "^5.2",
+        "league/fractal": "^0.13.0"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Jeff Lambert",
+            "email": "jefflikeschicken@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Jnet\\Api\\": "src/"
+        }
+    }
+}
