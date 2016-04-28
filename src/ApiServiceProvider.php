@@ -11,6 +11,10 @@ class ApiServiceProvider extends ServiceProvider
         $kernel = $this->app->make('Illuminate\Contracts\Http\Kernel');
 
         $kernel->pushMiddleware('Jnet\Api\Http\ApiMiddleware');
+
+        $this->publishes([
+            __DIR__.'/../config/config.php' => config_path('api.php'),
+        ], 'config');
     }
 
     public function register()
