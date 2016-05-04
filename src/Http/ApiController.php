@@ -92,7 +92,7 @@ abstract class ApiController extends Controller
         return $this->response($resource);
     }
 
-    protected function respondWithCollection(Collection $collection, $perPage, $curCursor)
+    protected function respondWithCollection(Collection $collection, $perPage, $curCursor = null)
     {
         $resource = new ResourceCollection($collection, $this->transformer);
         $resource->setCursor($this->cursor($collection, $perPage, $curCursor));
@@ -131,7 +131,7 @@ abstract class ApiController extends Controller
 
     protected function cursor($collection, $perPage, $curCursor)
     {
-        $curCursor = $curCursor ?: $collection->first()->cursor;
+        $curCursor = ($curCursor && count($collection)) ? $collection->first()->cursor : null; 
         $prevCursor = null;
         $nextCursor = $this->entity->nextPage($collection, $perPage, (string)$curCursor);
 
@@ -145,5 +145,10 @@ abstract class ApiController extends Controller
             $nextCursor ? base64_encode($nextCursor) : null,
             $collection->count()
         );
+    }
+
+    protected function setTransformer(Transformer $transformer)
+    {
+        $this->transformer = $transformer;
     }
 }
