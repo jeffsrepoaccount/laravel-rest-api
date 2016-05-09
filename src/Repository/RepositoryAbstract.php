@@ -81,14 +81,18 @@ abstract class RepositoryAbstract
 
     public function nextPage($collection, $perPage, $curCursor)
     {
-        $next = $this->entity->where('cursor', '<=', $curCursor)
+        $next = $this->entity
             ->orderBy('created_at', 'desc')
             ->orderBy('cursor', 'desc')
             ->take(1)
             ->skip($perPage)
-            ->get()
-            ->first()
         ;
+
+        if($curCursor) {
+            $next = $next->where('cursor', '<=', $curCursor);
+        }
+
+        $next = $next->get()->first();
 
         if($next && ((string)$next->cursor) !== $curCursor) {
             return $next->cursor;
