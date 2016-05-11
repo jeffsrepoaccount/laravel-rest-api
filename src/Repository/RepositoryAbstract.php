@@ -20,8 +20,8 @@ abstract class RepositoryAbstract
         // ever gets reset, this will guarantee that results will
         // still be returned in the correct order
         return $this->entity
-            ->orderBy('created_at', $direction)
             ->orderBy('cursor', $direction)
+            ->orderBy('created_at', $direction)
         ;
     }
 
