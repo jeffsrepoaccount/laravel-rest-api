@@ -68,7 +68,7 @@ abstract class ApiController extends Controller
             );
         }
 
-        return $this->emptyResponse();
+        return $this->errors->respondWithError(404);
     }
 
     public function create()
