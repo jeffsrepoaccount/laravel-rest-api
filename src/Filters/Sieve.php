@@ -1,5 +1,7 @@
 <?php namespace Jnet\Api\Filters;
 
+use Illuminate\Database\Eloquent\Builder;
+
 class Sieve implements FilterInterface
 {
     protected $filters = [];
@@ -10,7 +12,7 @@ class Sieve implements FilterInterface
         return $this;
     }
 
-    public function filter($query)
+    public function filter(Builder $query)
     {
         foreach($this->filters as $filter) {
             $query = $filter->filter($query);

@@ -153,3 +153,60 @@ Route::group(['prefix' => '/api/v1',], function() {
     Route::post('/resources/{id}',   'My\Controllers\ResourceController@update');
 });
 ```
+
+### Filters
+
+Filters can be useful for allowing resource listings to be constrained to arbitrary conditions.  Setting them up is a pretty straightforward process.  The API provides a filter container which I refer to as a _sieve_ that is used to parse incoming request parameters and determine whcih filters need to be applied.  Inside of a service provider, register your application-specific filters with the sieve:
+
+```php
+use Illuminate\Http\Request;
+use Jnet\Api\Filters\FilterInterface;
+use My\Filters\TitleFilter;
+//...
+
+$request = $app->make(Request::class);
+// Retrieve instance of API sieve
+$sieve = $app->make(FilterInterface::class);
+// Each filter needs an input key
+$myFilterKey = 'title';
+// If the request has an input with the specific key,
+// create a new TitleFilter instance and attach to 
+// the sieve.
+if($request->has($myFilterKey)) {
+    $sieve->addFilter(new TitleFilter($myFilterKey, $request->input($myFilterKey)));
+}
+```
+
+The filter class itself is dead simple.  The API provides a number of convenient classes that implement `Jnet\Api\Filters\FilterInterface` that can simply be extended.  For example, the title filter above could be implemented like this:
+
+```php
+<?php namespace My\Filters;
+
+use Jnet\Api\Filters\Equals;
+
+class TitleFilter extends Equals {}
+```
+
+What this is saying is that, when a request comes in specifying a title, we want only those records to be returned back whose title matches exactly (_equals_) the request input value.  For instance, a request to this endpoint:
+
+```
+GET /resources?title=foo
+```
+
+Will return all `resources` whose title is equal to `foo`.  Similar convenience classes are available, such as `GreaterThan`, `GreaterThanOrEqualTo`, `LessThan`, and `LessThanOrEqualTo`.  If you need a more complicated approach for your filter, you can extend `Jnet\Api\Filters\FilterAbstract` directly.  Below is the implementation of the `Equals` filter:
+
+```php
+<?php namespace Jnet\Api\Filters;
+
+use Illuminate\Database\Eloquent\Builder;
+
+class Equals extends FilterAbstract implements FilterInterface
+{
+    public function filter(Builder $query)
+    {
+        return $query->where($this->key, $this->value);
+    }
+}
+```
+
+Each filter needs to implement a `filter` method that will be handed a `Builder` object that you have a chance to modify as you see fit. Once the query is modified, return it back out and you're done.
