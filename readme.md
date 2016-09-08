@@ -5,8 +5,10 @@ This is a general purpose REST API package.  Use it to get a jumpstart on creati
 ### Features
 
 __Filters__ - Define custom filters that can be reused across all endpoints
+
 __Pagination__ - Don't overload your database.  Pagination is accomplished via cursors and is appropriate for handling real-time, fluid data.
-_TODO_ __Extensibility__ - By default, only JSON data is supported.  However, should you need to be able to return data back in other formats, you can easily override how the data is presented back in each request.
+
+__Extensibility__ - By default, only JSON data is supported.  However, should you need to be able to return data back in other formats, you can easily override how the data is presented back in each request.
 
 ## Usage
 
