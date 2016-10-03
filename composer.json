@@ -5,7 +5,8 @@
     "require": {
         "laravel/framework": "^5.2",
         "league/fractal": "^0.13.0",
-        "barryvdh/laravel-cors": "~0.7"
+        "barryvdh/laravel-cors": "~0.7",
+        "tymon/jwt-auth": "0.5.*"
     },
     "license": "MIT",
     "authors": [
