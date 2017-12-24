@@ -2,12 +2,17 @@
 
 use Illuminate\Database\Eloquent\Model;
 use Jnet\Api\Validators\ValidatorAbstract;
-use InvalidArgumentException;
+
+use Jnet\Api\Exceptions\ValidationFailed;
+use Jnet\Api\Exceptions\NotFound;
 
 abstract class RepositoryAbstract
 {
     protected $entity;
     protected $validator;
+
+    /* @var Illuminate\Support\MessageBag  */
+    protected $errors = null;
 
     public function __construct(Model $entity, ValidatorAbstract $validator)
     {
@@ -28,26 +33,48 @@ abstract class RepositoryAbstract
 
     public function byId($id)
     {
-        return $this->entity->where('id', $id);
+        return $this->entity->where('id', $id)->first();
     }
 
     public function create(array $data)
     {
-        if(!$this->validator->fails($data)) {
-            throw new InvalidArgumentException('Invalid data in input');
+        if($this->validator->setData($data)->fails()) {
+            $this->errors = $this->validator->errors();
+            throw new ValidationFailed('Invalid data in input');
         }
 
         return $this->entity->create($data);
     }
 
-    public function update($id, $data)
+    public function update($id, array $data)
     {
+        if($this->validator->setData($data)->fails()) {
+            $this->errors = $this->validator->errors();
+            throw new ValidationFailed('Invalid data in input');
+        }
 
+        if(!$entity = $this->byId($id)) {
+            // TODO: Add error message in message bag
+            throw new NotFound('Record not found');
+        }
+
+        // Prevent overwriting of id
+        $data[$this->entity->getKeyName()] = $id;
+
+        $entity->fill($data)->save();
+
+        return $entity;
     }
 
     public function delete($id)
     {
+        if(!$entity = $this->byId($id)) {
+            // TODO: Add error message in message bag
+            throw new NotFound('Record not found');
+        }
 
+        $entity->delete();
+        return $entity;
     }
 
     public function paginate($query, $perPage, $curCursor = null)
