@@ -58,7 +58,7 @@ abstract class ApiController extends Controller
 
     public function show($id)
     {
-        $query = $this->entity->byId($id);
+        $entity = $this->entity->byId($id);
 
         if($entity) {
             return $this->respondWithItem($entity);
