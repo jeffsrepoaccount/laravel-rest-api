@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Eloquent\Model;
 use Jnet\Api\Validators\ValidatorAbstract;
+use InvalidArgumentException;
 
 abstract class RepositoryAbstract
 {
@@ -16,7 +17,7 @@ abstract class RepositoryAbstract
 
     public function all($direction = 'DESC')
     {
-        // Order by both cursor and created_at. If auto_increment 
+        // Order by both cursor and created_at. If auto_increment
         // ever gets reset, this will guarantee that results will
         // still be returned in the correct order
         return $this->entity
