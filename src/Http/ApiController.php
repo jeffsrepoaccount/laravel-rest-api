@@ -37,10 +37,10 @@ abstract class ApiController extends Controller
         $perPage = Input::get('number', config('api.per_page'));
         $cursor = base64_decode(Input::get('cursor', null));
 
-        $query = $this->filters->filter( 
+        $query = $this->filters->filter(
             $this->entity->all()
         );
-        
+
         $entities = $this->entity->paginate($query, $perPage, $cursor)
             ->get()
         ;
@@ -60,12 +60,8 @@ abstract class ApiController extends Controller
     {
         $query = $this->entity->byId($id);
 
-        $entity = $this->filters->filter($query)->first();
-
         if($entity) {
-            return $this->respondWithItem(
-                $this->filters->filter($query)->first()
-            );
+            return $this->respondWithItem($entity);
         }
 
         return $this->errors->respondWithError(404);
@@ -109,7 +105,7 @@ abstract class ApiController extends Controller
         if(!is_array($data)) {
             $data = $this->fractalizeData($data);
         }
-        
+
         Log::info('API Response', [
 //            'user_id' => $this->user->id,
 //            'customer_id' => $this->user->customer_id,
@@ -131,16 +127,16 @@ abstract class ApiController extends Controller
 
     protected function cursor($collection, $perPage, $curCursor)
     {
-        $curCursor = ($curCursor && count($collection)) ? $collection->first()->cursor : null; 
+        $curCursor = ($curCursor && count($collection)) ? $collection->first()->cursor : null;
         $prevCursor = null;
         $nextCursor = $this->entity->nextPage($collection, $perPage, (string)$curCursor);
 
         if($curCursor) {
-            $prevCursor = $this->entity->previousPage($collection, $perPage, (string)$curCursor);    
+            $prevCursor = $this->entity->previousPage($collection, $perPage, (string)$curCursor);
         }
 
         return new Cursor(
-            base64_encode($curCursor), 
+            base64_encode($curCursor),
             $prevCursor ? base64_encode($prevCursor) : null,
             $nextCursor ? base64_encode($nextCursor) : null,
             $collection->count()
