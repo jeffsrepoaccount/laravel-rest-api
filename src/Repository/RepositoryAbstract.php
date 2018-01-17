@@ -83,8 +83,9 @@ abstract class RepositoryAbstract
             $query = $query->where('cursor', '<=', $curCursor);
         }
 
-        return $query
-            ->take($perPage)
+        return $perPage == 'all' ?
+            $query :
+            $query->take($perPage)
         ;
     }
 
