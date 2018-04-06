@@ -22,8 +22,12 @@ abstract class ApiController extends Controller
     protected $startTime;
     protected $filters;
 
-    public function __construct(Repository $entity, Transformer $transformer, ErrorTransformer $errors, FilterInterface $sieve)
-    {
+    public function __construct(
+        Repository $entity,
+        Transformer $transformer,
+        ErrorTransformer $errors,
+        FilterInterface $sieve
+    ) {
         $this->entity = $entity;
         $this->transformer = $transformer;
         $this->errors = $errors;
@@ -100,6 +104,11 @@ abstract class ApiController extends Controller
         return $this->response(['data' => []]);
     }
 
+    /**
+     * Packages data and returns response
+     * @param League\Fractal\Resource\Item | League\Fractal\Resource\Collection | array
+     * @return Illuminate\Http\Response
+     */
     protected function response($data, $status = 200)
     {
         if(!is_array($data)) {
@@ -114,6 +123,11 @@ abstract class ApiController extends Controller
         return response()->json($data, $status);
     }
 
+    /**
+     * Generates fractalized response
+     * @param League\Fractal\Resource\Item | League\Fractal\Resource\Collection
+     * @return array
+     */
     protected function fractalizeData($data)
     {
         $fractal = new FractalManager;
@@ -127,7 +141,10 @@ abstract class ApiController extends Controller
 
     protected function cursor($collection, $perPage, $curCursor)
     {
-        $curCursor = ($curCursor && count($collection)) ? $collection->first()->cursor : null;
+        $curCursor = count($collection) ?
+            $collection->first()->cursor :
+            $curCursor
+        ;
         $prevCursor = null;
         $nextCursor = $this->entity->nextPage($collection, $perPage, (string)$curCursor);
 
